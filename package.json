@@ -1,0 +1,8 @@
+{
+  "name": "music",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/XShinei/music.git",
+  "author": "xshinei",
+  "license": "MIT"
+}
