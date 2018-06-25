@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 
 module.exports = {
@@ -29,6 +30,42 @@ module.exports = {
                     MiniCssExtractPlugin.loader,  // replace ExtractTextPlugin.extract({..})
                     "css-loader"
                   ]
+            },
+            {
+                test: /\.vue$/,
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
+                use: ['vue-loader']
+            },
+            {
+                test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 10000
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(mp3|ogg)(\?.*)?$/,
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 10000,
+                            name: '[name].[hash:7].[ext]'
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -42,6 +79,7 @@ module.exports = {
             // both options are optional
             filename: "[name].css",
             chunkFilename: "[id].css"
-          })
+          }),
+        new VueLoaderPlugin()
     ]
 };
