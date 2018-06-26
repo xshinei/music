@@ -22,13 +22,14 @@ module.exports = {
                 use: ['babel-loader']
             },
             {
-                test: /\.css$/,
+                test: /\.scss$/,
                 include: [
                     path.resolve(__dirname, 'src')
                 ],
                 use: [
                     MiniCssExtractPlugin.loader,  // replace ExtractTextPlugin.extract({..})
-                    "css-loader"
+                    'css-loader',
+                    'sass-loader'
                   ]
             },
             {
@@ -77,8 +78,8 @@ module.exports = {
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: "[name].css",
-            chunkFilename: "[id].css"
+            filename: '[name].css',
+            chunkFilename: '[id].css'
           }),
         new VueLoaderPlugin()
     ]
