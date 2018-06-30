@@ -1,0 +1,5 @@
+$phoneWidth: 480px;
+
+@function setRem($width) {
+    @return $width / $phoneWidth * 1rem;
+}
