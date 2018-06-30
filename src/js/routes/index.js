@@ -1,10 +1,8 @@
-import Router from 'vue-router';
+import PlaylistIndex from '../pages/playlist/vPlaylistIndex.vue';
 
-const routes = [
+export default [
     {
         path: '/',
-        component: 'APP'
+        component: PlaylistIndex
     }
 ];
-
-export default new Router(routes);
