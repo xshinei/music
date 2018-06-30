@@ -82,5 +82,20 @@ module.exports = {
             chunkFilename: '[id].css'
           }),
         new VueLoaderPlugin()
-    ]
+    ],
+    devServer: {
+        port: 8080,
+        host: '127.0.0.1',
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:3000',
+                changeOrigin: true,
+                secure: false,
+                pathRewrite: {
+                    '^/api': ''
+                }
+            }
+        }
+    },
+    devtool: '#eval-source-map'
 };
