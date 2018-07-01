@@ -40,13 +40,13 @@ module.exports = {
                 use: ['vue-loader']
             },
             {
-                test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+                test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz|otf)(\?.+)?$/,
                 include: [
                     path.resolve(__dirname, 'src')
                 ],
                 use: [
                     {
-                        loader: 'url-loader',
+                        loader: 'file-loader',
                         options: {
                             limit: 10000
                         }
