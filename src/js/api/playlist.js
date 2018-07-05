@@ -5,3 +5,6 @@ export const getChoicenessList = params => http('/top/playlist', params);
 
 // 获取精品歌单
 export const getQualityList = params => http('/top/playlist/highquality', params);
+
+// 歌单分类
+export const getCatlist = params => http('/playlist/catlist', params);
