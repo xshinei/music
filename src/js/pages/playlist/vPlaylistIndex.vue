@@ -18,10 +18,10 @@
                 </div>
                 <div class="choiceness-list-container">
                     <div class="choiceness-list-header">
-                        <div class="tag">
-                            <span class="text">华语</span>
+                        <router-link to="/pickPlaylist" tag="div" class="tag">
+                            <span class="text">全部歌单</span>
                             <i class="icon"></i>
-                        </div>
+                        </router-link>
                         <div class="nav">
                             <a href="#" class="item">华语</a>
                             <span class="gap"></span>
@@ -89,7 +89,9 @@
 
                         // 配置BScroll
                         if (!this.scroll) {
-                            this.scroll = new BScroll('.scroll', {});
+                            this.scroll = new BScroll('.scroll', {
+                                click: true
+                            });
 
                             // 监听下拉刷新事件
                             this.scroll.on('touchEnd', (pos) => {
