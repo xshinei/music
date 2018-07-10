@@ -8,3 +8,6 @@ export const getQualityList = params => http('/top/playlist/highquality', params
 
 // 歌单分类
 export const getCatlist = params => http('/playlist/catlist', params);
+
+// 获取歌单详情
+export const getPlaylistDetail = params => http('/playlist/detail', params);
