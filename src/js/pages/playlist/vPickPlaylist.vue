@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%;">
+    <div class="wrapper" style="height: 100%;">
         <header class="header">
             <router-link to="/" class="back">取消</router-link>
             <h3 class="title">筛选歌单</h3>
@@ -55,9 +55,14 @@
 
             // 初始化better-scroll
             this.$nextTick(() => {
-                this.scroll = new BScroll('.scroll', {
-                    click: true
-                });
+                // 配置BScroll
+                        if (!this.scroll) {
+                            this.scroll = new BScroll('.scroll', {
+                                click: true
+                            });
+                        } else {
+                            this.scroll.refresh()
+                        }
             });
         },
         methods: {
@@ -100,9 +105,16 @@
 
 <style lang="scss" scoped>
     @import '../../../css/function.scss';
+    
+    .wrapper {
+        overflow: hidden;
+    }
 
     .header {
-        position: relative;
+        position: fixed;
+        z-index: 2;
+        left: 0;
+        right: 0;
         line-height: setRem(68);
         font-size: setRem(34);
         color: #fff;
@@ -118,6 +130,11 @@
             text-align: center;
             font-size: setRem(34);
         }
+    }
+
+    .scroll {
+        margin-top: setRem(68);
+        overflow: hidden;
     }
 
     .pick-playlist-header {
