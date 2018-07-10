@@ -31,7 +31,11 @@
                         </div>
                     </div>
                     <div class="choiceness-list-body">
-                        <div v-for="item in choicenessList" :key="item.id" class="choiceness-item">
+                        <router-link v-for="item in choicenessList" 
+                                    :key="item.id" 
+                                    :to="`/playlistContent/${item.id}`"
+                                    tag="div"
+                                    class="choiceness-item">
                             <div class="bg" :style="`background-image: url('${item.coverImgUrl}')`">
                                 <div class="creator">
                                     <i class="fa fa-user-o" aria-hidden="true"></i>
@@ -45,7 +49,7 @@
                             <div class="description">
                                 <span class="text"> {{ item.name }} </span>
                             </div>
-                        </div>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -72,12 +76,12 @@
                 this.quality = res.playlists[0];
                 this.qualityList = res.playlists;
             });
-
-            // 获取歌单（网友精选碟）
-           this._getChoicenessList();
+            
+           
         },
         mounted() {
-            
+             // 获取歌单（网友精选碟）
+           this._getChoicenessList();
         },
         methods: {
             _getChoicenessList() {
@@ -86,15 +90,15 @@
                 getChoicenessList({limit: this.choicenessLimit}).then(res => {
                     this.choicenessList = res.playlists;
                     this.$nextTick(() => {
-
                         // 配置BScroll
                         if (!this.scroll) {
                             this.scroll = new BScroll('.scroll', {
                                 click: true
                             });
-
+                            
                             // 监听下拉刷新事件
                             this.scroll.on('touchEnd', (pos) => {
+                                
                                 // 下拉动作
                                 if (Math.abs(pos.y) > 50) {
                                     this._getChoicenessList()
