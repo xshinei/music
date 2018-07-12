@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 100%;overflow: hidden;">
+    <div style="height: 100%;">
         <div class="header" :style="`background-image: url('${playlistDetail.coverImgUrl}');`">
             <div class="flex-container">
                 <span class="back">
@@ -12,9 +12,8 @@
                 </div>
             </div>
         </div>
-        <div class="scroll" style="height: 100%;">
-            <div class="content">
-                <div class="description-container"  :style="`background-image: url('${playlistDetail.coverImgUrl}');`">
+        <scroll :data="playlistDetail.trackIds">
+            <div class="description-container"  :style="`background-image: url('${playlistDetail.coverImgUrl}');`">
                     <div class="body-container">
                         <div class="cover-img">
                             <img :src="playlistDetail.coverImgUrl" alt="">
@@ -46,8 +45,8 @@
                             <span class="text">多选</span>
                         </div>
                     </div>
-                </div>
-                <div class="playlist-container">
+            </div>
+            <div class="playlist-container">
                     <ul>
                         <li class="list-item list-head">
                             <div class="all">
@@ -77,9 +76,8 @@
                             </div>
                         </li>
                     </ul>
-                </div>
             </div>
-        </div>
+        </scroll>
         <div class="modal" v-show="modalShow" @click="handleSlideDown"></div>
         <transition name="slide">
             <div class="slide-container" v-show="slide">
@@ -90,7 +88,6 @@
 </template>
 
 <script>
-    import BScroll from 'better-scroll';
     import { getPlaylistDetail } from '../../api/playlist';
 
     export default {
@@ -110,19 +107,6 @@
             getPlaylistDetail(params).then(res => {
                 if (res.code === 200) {
                     this.playlistDetail = res.playlist;
-
-                     // 初始化better-scroll
-                    this.$nextTick(() => {
-                        // 配置BScroll
-                        if (!this.scroll) {
-                            this.scroll = new BScroll('.scroll', {
-                                click: true
-                            });
-                            console.log(this.scroll);
-                        } else {
-                            this.scroll.refresh()
-                        }
-                    });
                 }
             });
         },
@@ -185,7 +169,7 @@
         }
     }
 
-    .scroll {
+    .scroll-container {
         margin-top: setRem(112);
     }
 

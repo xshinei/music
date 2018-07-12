@@ -4,12 +4,12 @@
             <router-link to="/" class="back">取消</router-link>
             <h3 class="title">筛选歌单</h3>
         </header>
-        <div class="scroll" style="height: 100%;">
-            <div class="content">
-                <div class="pick-playlist-header">
+        
+        <scroll :data="categories">
+            <div class="pick-playlist-header">
                     <h2 class="all-playlist">{{ all.name }}</h2>
-                </div>
-                <div class="pick-playlist-body">
+            </div>
+            <div class="pick-playlist-body">
                     <ul v-for="(category, index) in categories" :key="index" class="tag-container">
                         <div class="super_tag_container">
                             <li class="super-tag">{{ category.super }}</li>
@@ -27,14 +27,12 @@
                             </li>
                         </div>
                     </ul>
-                </div>
             </div>
-        </div>
+        </scroll>
     </div>
 </template>
 
 <script>
-    import BScroll from 'better-scroll';
     import { getCatlist } from '../../api/playlist';
 
     export default {
@@ -51,18 +49,6 @@
                     this.all = res.all;
                     this.initData(res);
                 }
-            });
-
-            // 初始化better-scroll
-            this.$nextTick(() => {
-                // 配置BScroll
-                        if (!this.scroll) {
-                            this.scroll = new BScroll('.scroll', {
-                                click: true
-                            });
-                        } else {
-                            this.scroll.refresh()
-                        }
             });
         },
         methods: {
@@ -105,14 +91,11 @@
 
 <style lang="scss" scoped>
     @import '../../../css/function.scss';
-    
-    .wrapper {
-        overflow: hidden;
-    }
 
     .header {
         position: fixed;
-        z-index: 2;
+        z-index: 1;
+        top: 0;
         left: 0;
         right: 0;
         line-height: setRem(68);
@@ -132,9 +115,8 @@
         }
     }
 
-    .scroll {
+    .scroll-container {
         margin-top: setRem(68);
-        overflow: hidden;
     }
 
     .pick-playlist-header {
