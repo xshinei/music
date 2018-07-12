@@ -1,41 +1,48 @@
 <template>
-    <div class="wrapper" style="height: 100%;">
+    <div class="pick-playlist-container">
         <header class="header">
-            <router-link to="/" class="back">取消</router-link>
+            <a class="back" @click="handleHide">取消</a>
             <h3 class="title">筛选歌单</h3>
         </header>
         
         <scroll :data="categories">
             <div class="pick-playlist-header">
-                    <h2 class="all-playlist">{{ all.name }}</h2>
+                <h2 class="all-playlist">{{ all.name }}</h2>
             </div>
             <div class="pick-playlist-body">
-                    <ul v-for="(category, index) in categories" :key="index" class="tag-container">
-                        <div class="super_tag_container">
-                            <li class="super-tag">{{ category.super }}</li>
-                        </div>
-                        <div class="sub_right_tag_container">
-                            <li v-for="item in category.sub_right" :key="item.name" class="sub-tag">
-                                <p v-if="item.hot" class="hot"><span class="text">HOT</span></p>
-                                {{ item.name }}
-                            </li>
-                        </div>
-                        <div v-if="category.sub_bottom.length" class="sub_bottom_tag_container">
-                            <li v-for="item in category.sub_bottom" :key="item.name" class="sub-tag">
-                                <p v-if="item.hot" class="hot"><span class="text">HOT</span></p>
-                                {{ item.name }}
-                            </li>
-                        </div>
-                    </ul>
+                <ul v-for="(category, index) in categories" :key="index" class="tag-container">
+                    <div class="super_tag_container">
+                        <li class="super-tag">{{ category.super }}</li>
+                    </div>
+                    <div class="sub_right_tag_container">
+                        <li v-for="item in category.sub_right" 
+                            :key="item.name" 
+                            @click="handleChangeTag(item.name)"
+                            class="sub-tag">
+                            <p v-if="item.hot" class="hot"><span class="text">HOT</span></p>
+                            {{ item.name }}
+                        </li>
+                    </div>
+                    <div v-if="category.sub_bottom.length" class="sub_bottom_tag_container">
+                        <li v-for="item in category.sub_bottom" 
+                            :key="item.name" 
+                            @click="handleChangeTag(item.name)"
+                            class="sub-tag">
+                            <p v-if="item.hot" class="hot"><span class="text">HOT</span></p>
+                            {{ item.name }}
+                        </li>
+                    </div>
+                </ul>
             </div>
         </scroll>
     </div>
 </template>
 
 <script>
-    import { getCatlist } from '../../api/playlist';
+    import { getCatList } from '../../api/playlist';
 
     export default {
+        props: ['show', 'tag'],
         data() {
             return {  
                 categories: [],
@@ -44,7 +51,7 @@
         },
         created() {
             // 歌单分类
-            getCatlist().then(res => {
+            getCatList().then(res => {
                 if (res.code === 200) {
                     this.all = res.all;
                     this.initData(res);
@@ -52,6 +59,13 @@
             });
         },
         methods: {
+            handleHide() {  // 隐藏页面
+                this.$emit('update:show', false);
+            },
+            handleChangeTag(val) {  // 切换歌单分类标签
+                this.$emit('update:tag', val);
+                this.$emit('update:show', false);
+            },
             initData(data) {
                 const SUB_RIGHT_MAX_COUNT = 6;  // 主标签右边的最大子标签数
                 const SUB_BOTTOM_ROW = 4;   // 标签一行所占的数目
@@ -92,6 +106,13 @@
 <style lang="scss" scoped>
     @import '../../../css/function.scss';
 
+    .pick-playlist-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+    }
+
     .header {
         position: fixed;
         z-index: 1;
@@ -122,6 +143,7 @@
     .pick-playlist-header {
         // height: setRem(120);
         padding: setRem(12);
+        background-color: #fff;
 
         .all-playlist {
             display: flex;

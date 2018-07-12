@@ -2,7 +2,7 @@
     <div style="height: 100%;">
         <div class="header" :style="`background-image: url('${playlistDetail.coverImgUrl}');`">
             <div class="flex-container">
-                <span class="back">
+                <span class="back" @click="handleGoBack">
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                 </span>
                 <h3 class="title">歌单</h3>
@@ -118,6 +118,9 @@
             handleSlideDown() {
                 this.slide = false;
                 this.modalShow = false;
+            },
+            handleGoBack() {
+                this.$router.go(-1);
             }
         }
     }
