@@ -17,20 +17,21 @@
                     </div>
         </div>
         <div class="choiceness-list-container">
-                    <div class="choiceness-list-header">
-                        <router-link to="/pickPlaylist" tag="div" class="tag">
-                            <span class="text">全部歌单</span>
-                            <i class="icon"></i>
-                        </router-link>
-                        <div class="nav">
-                            <a href="#" class="item">华语</a>
-                            <span class="gap"></span>
-                            <a href="#" class="item">ACG</a>
-                            <span class="gap"></span>
-                            <a href="#" class="item">影视原声</a>
-                        </div>
+            <div class="choiceness-list-header">
+                <div class="tag" @click="handleShowPickPlaylist">
+                    <span class="text">{{ tag }}</span>
+                    <i class="icon"></i>
+                 </div>
+                <div class="nav">
+                    <div v-for="(item, index) in hotCatList" 
+                        :key="item.id" 
+                        class="item" @click="handleChangeTag(item.name)">
+                        <a href="javascript: void(0);" class="text">{{ item.name }}</a>
+                        <span v-if="index < 2" class="gap"></span>
                     </div>
-                    <div class="choiceness-list-body">
+                </div>
+            </div>
+            <div class="choiceness-list-body">
                         <router-link v-for="item in choicenessList" 
                                     :key="item.id" 
                                     :to="`/playlistContent/${item.id}`"
@@ -50,13 +51,21 @@
                                 <span class="text"> {{ item.name }} </span>
                             </div>
                         </router-link>
-                    </div>
+            </div>
         </div>
+
+        <transition name="slide">
+            <pick-playlist v-show="showPickPlaylist" 
+                            :show.sync="showPickPlaylist" 
+                            :tag.sync="tag">
+            </pick-playlist>
+        </transition>
     </scroll>
 </template>
 
 <script>
-    import { getChoicenessList, getQualityList } from '../../api/playlist';
+    import { getChoicenessList, getQualityList, getHotCatList } from '../../api/playlist';
+    import PickPlaylist from './vPickPlaylist.vue';
 
     export default {
         data() {
@@ -64,7 +73,10 @@
                 quality: {},    // 精选歌单列表的第一个
                 qualityList: [],    // 精选歌单列表
                 choicenessList: [], // 歌单（网友精选碟）
-                choicenessLimit: 0  // 一次获取的数目
+                choicenessLimit: 0,  // 一次获取的数目
+                showPickPlaylist: false,    // 是否显示歌单分类列表
+                tag: '全部', // 歌单分类标签
+                hotCatList: []
             };
         },
         created() {
@@ -73,46 +85,56 @@
                 this.quality = res.playlists[0];
                 this.qualityList = res.playlists;
             });
-            
-           
+
+            // 获取热门分类标签
+            getHotCatList().then(res => {
+                if (res.code === 200) {
+                    this.hotCatList = res.tags.slice(0, 3);
+                }
+            });
         },
         mounted() {
              // 获取歌单（网友精选碟）
            this._getChoicenessList();
         },
         methods: {
-            _getChoicenessList() {
+            handleShowPickPlaylist() {  // 显示歌单分类标签列表
+                this.showPickPlaylist = true;
+            },
+            handleChangeTag(val) {  // 切换歌单分类标签
+                this.tag = val;
+            },
+            _getChoicenessList() {  
                 this.choicenessLimit += 10;
 
-                getChoicenessList({limit: this.choicenessLimit}).then(res => {
+                const params = {
+                    limit: this.choicenessLimit,
+                    cat: this.tag
+                };
+
+                getChoicenessList(params).then(res => {
                     this.choicenessList = res.playlists;
-                    // this.$nextTick(() => {
-                    //     // 配置BScroll
-                    //     if (!this.scroll) {
-                    //         this.scroll = new BScroll('.scroll', {
-                    //             click: true
-                    //         });
-                            
-                    //         // 监听下拉刷新事件
-                    //         this.scroll.on('touchEnd', (pos) => {
-                                
-                    //             // 下拉动作
-                    //             if (Math.abs(pos.y) > 50) {
-                    //                 this._getChoicenessList()
-                    //             }
-                    //         });
-                    //     } else {
-                    //         this.scroll.refresh()
-                    //     }
-                    // });
                 });
             }
+        },
+        watch: {
+            tag() { // 监听标签变化，重新加载数据
+                this.choicenessLimit = 0;
+                this._getChoicenessList();
+            }
+        },
+        components: {
+            PickPlaylist
         }
     }
 </script>
 
 <style lang="scss" scoped>
     @import '../../../css/function.scss';
+
+    .scroll-container {
+        position: relative;
+    }
 
     .quality-link-container {
         display: flex;
@@ -122,6 +144,7 @@
         background-color: rgb(43, 43, 43);
 
         .cover-img {
+            flex: 0 0 auto;
             width: setRem(200);
             height: setRem(200);
 
@@ -207,15 +230,19 @@
                 align-items: center;
 
                 .item {
-                    font-size: setRem(26);
-                    color: rgb(81, 82, 83);
-                }
+                    display: flex;
 
-                .gap {
-                    height: setRem(28);
-                    margin: 0 setRem(20);
-                    padding: 0 setRem(1);
-                    background-color: rgb(219, 220, 222);
+                    .text {
+                        font-size: setRem(26);
+                        color: rgb(81, 82, 83);
+                    }
+
+                    .gap {
+                        height: setRem(28);
+                        margin: 0 setRem(20);
+                        padding: 0 setRem(1);
+                        background-color: rgb(219, 220, 222);
+                    }
                 }
             }
         }
@@ -265,6 +292,18 @@
                 }
             }
         }
+    }
+
+    .slide-enter, .slide-leave-to {
+        transform: translateY(100%);
+    }
+
+    .slide-enter-to, .slide-leave {
+        transform: translateY(0);
+    }
+
+    .slide-enter-active, .slide-leave-active {
+        transition: transform .5s;
     }
 </style>
 

@@ -7,7 +7,10 @@ export const getChoicenessList = params => http('/top/playlist', params);
 export const getQualityList = params => http('/top/playlist/highquality', params);
 
 // 歌单分类
-export const getCatlist = params => http('/playlist/catlist', params);
+export const getCatList = params => http('/playlist/catlist', params);
+
+// 热门歌单分类
+export const getHotCatList = params => http('/playlist/hot', params);
 
 // 获取歌单详情
 export const getPlaylistDetail = params => http('/playlist/detail', params);
