@@ -1,8 +1,8 @@
 <template>
-    <div style="height: 100%;">
-        <div class="scroll" style="height: 100%;">
-            <div class="content">
-                <div class="quality-link-container">
+    <scroll :data="choicenessList" 
+            :pullup="true" 
+            @scrollToEnd="_getChoicenessList">
+        <div class="quality-link-container">
                     <div class="cover-img">
                         <img :src="quality.coverImgUrl" alt="">
                     </div>
@@ -15,8 +15,8 @@
                         <h2 class="title">{{ quality.name }}</h2>
                         <span class="writer">{{ quality.copywriter }}</span>
                     </div>
-                </div>
-                <div class="choiceness-list-container">
+        </div>
+        <div class="choiceness-list-container">
                     <div class="choiceness-list-header">
                         <router-link to="/pickPlaylist" tag="div" class="tag">
                             <span class="text">全部歌单</span>
@@ -51,14 +51,11 @@
                             </div>
                         </router-link>
                     </div>
-                </div>
-            </div>
         </div>
-    </div>
+    </scroll>
 </template>
 
 <script>
-    import BScroll from 'better-scroll';
     import { getChoicenessList, getQualityList } from '../../api/playlist';
 
     export default {
@@ -89,25 +86,25 @@
 
                 getChoicenessList({limit: this.choicenessLimit}).then(res => {
                     this.choicenessList = res.playlists;
-                    this.$nextTick(() => {
-                        // 配置BScroll
-                        if (!this.scroll) {
-                            this.scroll = new BScroll('.scroll', {
-                                click: true
-                            });
+                    // this.$nextTick(() => {
+                    //     // 配置BScroll
+                    //     if (!this.scroll) {
+                    //         this.scroll = new BScroll('.scroll', {
+                    //             click: true
+                    //         });
                             
-                            // 监听下拉刷新事件
-                            this.scroll.on('touchEnd', (pos) => {
+                    //         // 监听下拉刷新事件
+                    //         this.scroll.on('touchEnd', (pos) => {
                                 
-                                // 下拉动作
-                                if (Math.abs(pos.y) > 50) {
-                                    this._getChoicenessList()
-                                }
-                            });
-                        } else {
-                            this.scroll.refresh()
-                        }
-                    });
+                    //             // 下拉动作
+                    //             if (Math.abs(pos.y) > 50) {
+                    //                 this._getChoicenessList()
+                    //             }
+                    //         });
+                    //     } else {
+                    //         this.scroll.refresh()
+                    //     }
+                    // });
                 });
             }
         }
