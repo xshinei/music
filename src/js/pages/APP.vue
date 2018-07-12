@@ -1,7 +1,7 @@
 <template>
-    <!-- <transition :name="transitionName"> -->
+    <transition :name="transitionName">
         <router-view></router-view>
-    <!-- </transition> -->
+    </transition>
 </template>
 
 <script>
