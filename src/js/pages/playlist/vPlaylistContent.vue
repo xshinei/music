@@ -12,8 +12,12 @@
                 </div>
             </div>
         </div>
-        <scroll :data="playlistDetail.trackIds">
-            <div class="description-container"  :style="`background-image: url('${playlistDetail.coverImgUrl}');`">
+        <scroll :data="playlistDetail.trackIds"
+                :probe-type="3" 
+                :listen-scroll="true" 
+                @scroll="handleOutScroll" ref="outScroll"
+                class="out-scroll">
+            <div class="description-container" :style="`background-image: url('${playlistDetail.coverImgUrl}');`">
                     <div class="body-container">
                         <div class="cover-img">
                             <img :src="playlistDetail.coverImgUrl" alt="">
@@ -46,9 +50,10 @@
                         </div>
                     </div>
             </div>
+            
             <div class="playlist-container">
-                    <ul>
-                        <li class="list-item list-head">
+                <ul>
+                    <li class="list-item list-head" ref="listHead">
                             <div class="all">
                                 <div class="icon-container">
                                     <i class="icon-play fa fa-play" aria-hidden="true"></i>
@@ -60,28 +65,35 @@
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                                 收藏({{playlistDetail.subscribedCount}})
                             </a>
-                        </li>
+                    </li>
+                    <scroll :data="playlistDetail.trackIds" 
+                            class="in-scroll" 
+                            :listen-scroll="true"
+                            @scroll="handleInScroll"
+                            ref="inScroll">
                         <li class="list-item" v-for="(item, index) in playlistDetail.tracks" :key="item.id">
-                            <div class="song-message">
-                                <div class="index">{{ index }}</div>
-                                <div class="song">
-                                    <span class="name">{{ item.name }}</span>
-                                    <p class="singer">
-                                        {{ item.name }} - {{ item.ar[0].name }}
-                                    </p>
+                                <div class="song-message">
+                                    <div class="index">{{ index }}</div>
+                                    <div class="song">
+                                        <span class="name">{{ item.name }}</span>
+                                        <p class="singer">
+                                            {{ item.name }} - {{ item.ar[0].name }}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="more">
-                                ···
-                            </div>
+                                <div class="more">
+                                        ···
+                                </div>
                         </li>
-                    </ul>
+                    </scroll>
+                </ul>
             </div>
+            
         </scroll>
         <div class="modal" v-show="modalShow" @click="handleSlideDown"></div>
         <transition name="slide">
             <div class="slide-container" v-show="slide">
-            
+                
             </div>
         </transition>
     </div>
@@ -95,7 +107,8 @@
             return {
                 playlistDetail: {},
                 slide: false,
-                modalShow: false
+                modalShow: false,
+                showListFixed: false
             };
         },
         created() {
@@ -121,6 +134,38 @@
             },
             handleGoBack() {
                 this.$router.go(-1);
+            },
+            handleOutScroll(pos) {  // 监听outScroll滚动
+                const outScroll = this.$refs.outScroll.scroll;
+
+                // 判断是从下往上滑 且 滑动距离超过listHead的高度，即playlist滑动到顶端
+                if (outScroll.movingDirectionY === 1 && pos.y < -256) {
+                    // 关闭outScroll，开启inScroll
+                    this.$refs.outScroll.disable();
+                    this.$refs.inScroll.enable();
+
+                    let inScroll = this.$refs.inScroll.$refs.scroll;
+                    const listHead = this.$refs.listHead;
+
+                    this.inScrollHeight || (this.inScrollHeight = inScroll.scroll.clientHeight);
+                    
+                    inScroll.style.height = document.documentElement.clientHeight - listHead.clientHeight + 'px';
+                    this.$refs.inScroll.refresh();
+                }
+            },
+            handleInScroll(pos) {   // 监听inScroll滚动
+                const inScroll = this.$refs.inScroll.scroll;
+                
+                // 判断是从上往下滑动 且 纵轴坐标大于0，即已经滑到底
+                if (inScroll.movingDirectionY === -1 && pos.y >= 0) {
+                    this.$refs.inScroll.$refs.scroll.style.height = this.inScrollHeight + 'px';
+                    this.$refs.inScroll.refresh();
+                    this.$refs.inScroll.disable();
+
+                    this.$refs.outScroll.enable();
+                    this.$refs.outScroll.refresh();
+                    this.$refs.outScroll.scroll.scrollTo(0, -256);
+                }
             }
         }
     }
@@ -172,7 +217,7 @@
         }
     }
 
-    .scroll-container {
+    .out-scroll {
         margin-top: setRem(112);
     }
 
@@ -268,16 +313,24 @@
         background-color: transparent;
 
         ul {
+            position: relative;
+            padding-top: setRem(110);
             border-top-left-radius: inherit;
             border-top-right-radius: inherit;
             background-color: rgb(250, 251, 253);
 
-              .list-head {
+            .list-head {
+                position: absolute;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                width: 100%;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 border-top-left-radius: inherit;
                 border-top-right-radius: inherit;
+                background-color: rgb(250, 251, 253);
 
                 .all {
                     display: flex;
