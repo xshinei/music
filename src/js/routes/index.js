@@ -1,6 +1,7 @@
 import PlaylistIndex from '../pages/playlist/vPlaylistIndex.vue';
 import PickPlaylist from '../pages/playlist/vPickPlaylist.vue';
 import PlaylistContent from '../pages/playlist/vPlaylistContent.vue';
+import Player from '../pages/player/vPlayer.vue';
 
 export default [
     {
@@ -26,6 +27,13 @@ export default [
         component: PlaylistContent,
         meta: {
             index: 3
+        }
+    },
+    {
+        path: '/player/:id',
+        component: Player,
+        meta: {
+            index: 4
         }
     }
 ];

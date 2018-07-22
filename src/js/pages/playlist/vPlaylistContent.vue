@@ -54,42 +54,45 @@
             <div class="playlist-container">
                 <ul>
                     <li class="list-item list-head" ref="listHead">
-                            <div class="all">
-                                <div class="icon-container">
-                                    <i class="icon-play fa fa-play" aria-hidden="true"></i>
-                                </div>
-                                播放全部
-                                <span class="count">(共{{playlistDetail.trackCount}}首)</span>
+                        <div class="all">
+                            <div class="icon-container">
+                                <i class="icon-play fa fa-play" aria-hidden="true"></i>
                             </div>
-                            <a href="" class="collect">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                                收藏({{playlistDetail.subscribedCount}})
-                            </a>
+                            播放全部
+                            <span class="count">(共{{playlistDetail.trackCount}}首)</span>
+                        </div>
+                        <a href="" class="collect">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            收藏({{playlistDetail.subscribedCount}})
+                        </a>
                     </li>
                     <scroll :data="playlistDetail.trackIds" 
                             class="in-scroll" 
                             :listen-scroll="true"
                             @scroll="handleInScroll"
                             ref="inScroll">
-                        <li class="list-item" v-for="(item, index) in playlistDetail.tracks" :key="item.id">
-                                <div class="song-message">
-                                    <div class="index">{{ index }}</div>
-                                    <div class="song">
-                                        <span class="name">{{ item.name }}</span>
-                                        <p class="singer">
-                                            {{ item.name }} - {{ item.ar[0].name }}
-                                        </p>
-                                    </div>
+                        <li class="list-item" 
+                            v-for="(item, index) in playlistDetail.tracks" 
+                            :key="item.id">
+                            <div class="song-message" @click="handleToPlayer(item.id)">
+                                <div class="index">{{ index }}</div>
+                                <div class="song">
+                                    <span class="name">{{ item.name }}</span>
+                                    <p class="singer">
+                                        {{ item.name }} - {{ item.ar[0].name }}
+                                    </p>
                                 </div>
-                                <div class="more">
-                                        ···
-                                </div>
+                            </div>
+                            <div class="more">
+                                ···
+                            </div>
                         </li>
                     </scroll>
                 </ul>
             </div>
             
         </scroll>
+
         <div class="modal" v-show="modalShow" @click="handleSlideDown"></div>
         <transition name="slide">
             <div class="slide-container" v-show="slide">
@@ -166,6 +169,11 @@
                     this.$refs.outScroll.refresh();
                     this.$refs.outScroll.scroll.scrollTo(0, -256);
                 }
+            },
+            handleToPlayer(id) {
+                this.$router.push({
+                    path: `/player/${id}`
+                });
             }
         }
     }
