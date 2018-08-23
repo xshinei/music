@@ -29,6 +29,15 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,  // replace ExtractTextPlugin.extract({..})
                     'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                          sourceMap: true,
+                          config: {
+                            path: 'postcss.config.js'  // 这个得在项目根目录创建此文件
+                          }
+                        }
+                      },
                     'sass-loader'
                   ]
             },
@@ -85,12 +94,12 @@ module.exports = {
     ],
     devServer: {
         port: 8080,
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         proxy: {
             '/api/*': {
                 target: 'http://127.0.0.1:3000',
                 changeOrigin: true,
-                secure: false,
+                // secure: false,
                 pathRewrite: {
                     '^/api': ''
                 }
