@@ -3,18 +3,18 @@
             :pullup="true" 
             @scrollToEnd="_getChoicenessList">
         <div class="quality-link-container">
-                    <div class="cover-img">
-                        <img :src="quality.coverImgUrl" alt="">
-                    </div>
-                    <div class="cover-message">
-                        <a href="" class="quality-link">
-                            <i class="tag fa fa-star-o" aria-hidden="true"></i>
-                            <span class="text">精品歌单</span>
-                            <i class="arrow fa fa-angle-right" aria-hidden="true"></i>
-                        </a>
-                        <h2 class="title">{{ quality.name }}</h2>
-                        <span class="writer">{{ quality.copywriter }}</span>
-                    </div>
+            <div class="cover-img">
+                <img :src="quality.coverImgUrl" alt="">
+            </div>
+            <div class="cover-message">
+                <a href="" class="quality-link">
+                    <i class="tag fa fa-star-o" aria-hidden="true"></i>
+                    <span class="text">精品歌单</span>
+                    <i class="arrow fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+                <h2 class="title">{{ quality.name }}</h2>
+                <span class="writer">{{ quality.copywriter }}</span>
+            </div>
         </div>
         <div class="choiceness-list-container">
             <div class="choiceness-list-header">
@@ -32,25 +32,25 @@
                 </div>
             </div>
             <div class="choiceness-list-body">
-                        <router-link v-for="item in choicenessList" 
-                                    :key="item.id" 
-                                    :to="`/playlistContent/${item.id}`"
-                                    tag="div"
-                                    class="choiceness-item">
-                            <div class="bg" :style="`background-image: url('${item.coverImgUrl}')`">
-                                <div class="creator">
-                                    <i class="fa fa-user-o" aria-hidden="true"></i>
-                                    <span class="name">{{ item.creator.nickname }}</span>
-                                </div>
-                                <div class="listen">
-                                    <i class="fa fa-headphones" aria-hidden="true"></i>
-                                    <span class="count">{{ item.playCount }}</span>
-                                </div>
-                            </div>
-                            <div class="description">
-                                <span class="text"> {{ item.name }} </span>
-                            </div>
-                        </router-link>
+                <router-link v-for="item in choicenessList" 
+                            :key="item.id" 
+                            :to="`/playlistContent/${item.id}`"
+                            tag="div"
+                            class="choiceness-item">
+                    <div class="bg" :style="`background-image: url('${item.coverImgUrl}')`">
+                        <div class="creator">
+                            <i class="fa fa-user-o" aria-hidden="true"></i>
+                            <span class="name">{{ item.creator.nickname }}</span>
+                        </div>
+                        <div class="listen">
+                            <i class="fa fa-headphones" aria-hidden="true"></i>
+                            <span class="count">{{ item.playCount }}</span>
+                        </div>
+                    </div>
+                    <div class="description">
+                        <span class="text"> {{ item.name }} </span>
+                    </div>
+                </router-link>
             </div>
         </div>
 
@@ -82,6 +82,7 @@
         created() {
             // 获取精选歌单列表
             getQualityList().then(res => {
+                console.log(res);
                 this.quality = res.playlists[0];
                 this.qualityList = res.playlists;
             });

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './js/routes/index';
+import store from './js/store/index';
 
 import APP from './js/pages/APP.vue';
 import './js/utils/init';
@@ -15,5 +16,6 @@ const router = new VueRouter({routes});
 
 new Vue({
     router,
+    store,
     render: h => h(APP)
 }).$mount('#app');

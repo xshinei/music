@@ -45,4 +45,32 @@ export default async (url = '', data = {}, type = 'GET') => {
             throw new Error(error);
         }
     }
+    else {  // 不支持fetch 
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open(type, url);
+
+            xhr.addEventListener('readystatechange', () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                        resolve(JSON.parse(xhr.responseText));
+                    }
+                }
+            });
+
+            xhr.addEventListener('error', error => {
+                reject(error);
+            });
+
+            xhr.setRequestHeader('Accept', 'application/josn');
+            xhr.setRequestHeader('Content-type', 'application/json');
+
+            if (type === 'POST') {
+                xhr.send(JSON.stringify(data));
+            }
+
+            xhr.send();
+        });
+    }
 };

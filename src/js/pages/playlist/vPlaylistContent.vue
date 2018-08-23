@@ -74,7 +74,7 @@
                         <li class="list-item" 
                             v-for="(item, index) in playlistDetail.tracks" 
                             :key="item.id">
-                            <div class="song-message" @click="handleToPlayer(item.id)">
+                            <div class="song-message" @click="handleToPlayer(item.id, index)">
                                 <div class="index">{{ index }}</div>
                                 <div class="song">
                                     <span class="name">{{ item.name }}</span>
@@ -103,6 +103,7 @@
 </template>
 
 <script>
+    import { mapMutations } from 'vuex';
     import { getPlaylistDetail } from '../../api/playlist';
 
     export default {
@@ -123,6 +124,9 @@
             getPlaylistDetail(params).then(res => {
                 if (res.code === 200) {
                     this.playlistDetail = res.playlist;
+
+                    // 存入vuex
+                    this.setPlayList(res.playlist.tracks);
                 }
             });
         },
@@ -170,11 +174,17 @@
                     this.$refs.outScroll.scroll.scrollTo(0, -256);
                 }
             },
-            handleToPlayer(id) {
+            handleToPlayer(id, index) {
+                this.setCurrentIndex(index);
+
                 this.$router.push({
                     path: `/player/${id}`
                 });
-            }
+            },
+            ...mapMutations({
+                setPlayList: 'SET_PLAY_LIST',
+                setCurrentIndex: 'SET_CURRENT_INDEX'
+            })
         }
     }
 </script>
