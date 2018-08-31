@@ -14,16 +14,16 @@
         </div>
         <div class="option-container">
             <div class="love">
-                <i class="fa fa-heart-o" aria-hidden="true"></i>
+                <img src="./cm2_play_icn_love@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="download">
-                <i class="fa fa-download" aria-hidden="true"></i>
+                <img src="./cm2_list_detail_icn_dld.png" width="100%" height="100%" alt="">
             </div>
             <div class="comment">
-                <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                <img src="./cm2_list_detail_icn_cmt@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="more">
-                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                <img src="./cm2_play_icn_more@2x.png" width="100%" height="100%" alt="">
             </div>
         </div>
         <div class="progress-container">
@@ -39,20 +39,24 @@
         </div>
         <div class="tool-container">
             <div class="play-mode" @click="handleSwitchMode">
-                <i class="icon fa fa-random" aria-hidden="true"></i>
+                <img v-if="play_mode === 0" src="./cm2_icn_loop@2x.png" width="100%" height="100%" alt="">
+                <img v-else-if="play_mode === 1" src="./cm2_icn_one@2x.png" width="100%" height="100%" alt="">
+                <img v-else-if="play_mode === 2" src="./cm2_icn_shuffle@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="backward" @click="handleSwitchSong(-1)">
-                <i class="icon fa fa-step-backward" aria-hidden="true"></i>
+                <img src="./cm2_play_btn_prev@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="play-pause" @click="handlePlay">
-                <i v-if="togglePlay" class="icon fa fa-pause" aria-hidden="true"></i>
-                <i v-else class="icon fa fa-play" aria-hidden="true"></i>
+                <!-- <i v-if="togglePlay" class="icon fa fa-pause" aria-hidden="true"></i>
+                <i v-else class="icon fa fa-play" aria-hidden="true"></i> -->
+                <img v-if="togglePlay" src="./cm2_runfm_btn_pause@2x.png" width="100%" height="100%" alt="">
+                <img v-else src="./cm2_runfm_btn_play@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="forward" @click="handleSwitchSong(1)">
-                <i class="icon fa fa-step-forward" aria-hidden="true"></i>
+                <img src="./cm2_runfm_btn_next@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="play-list">
-                <i class="icon fa fa-align-justify" aria-hidden="true"></i>
+                <img src="./cm2_icn_list@2x.png" width="100%" height="100%" alt="">
             </div>
         </div>
     </div>
@@ -361,8 +365,11 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 setRem(118);
-            font-size: setRem(37);
-            color: rgb(217, 217, 218);
+
+            div {
+                width: setRem(80);
+                height: setRem(80);
+            }
         }
 
         .progress-container {
@@ -418,34 +425,18 @@
             align-items: center;
             height: setRem(170);
 
-            .play-mode, .play-list {
-                font-size: setRem(42);
-                color: rgb(231, 231, 231);
-            }
-
-            .backward, .forward {
-                font-size: setRem(48);
-                color: rgb(231, 231, 231);
+            .play-mode, 
+            .backward, 
+            .play-pause,
+            .forward,
+            .play-list {
+                width: setRem(94);
+                height: setRem(94);
             }
 
             .play-pause {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: setRem(92);
-                height: setRem(92);
-                border: 1px solid #fff;
-                border-radius: 50%;
-                color: #fff;
-
-                .icon {
-                    font-size: setRem(39);
-                    font-weight: lighter;
-
-                    &.fa-play {
-                        margin-left: setRem(12);
-                    }
-                }
+                width: setRem(144);
+                height: setRem(144);
             }
         }
     }
