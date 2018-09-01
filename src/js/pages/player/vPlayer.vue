@@ -3,40 +3,52 @@
         <div class="blur-background">
             <img :src="current_song.al.picUrl" width="100%" height="100%" alt="">
         </div>
-        <audio :src="song_url" 
-                autoplay 
-                ref="audio" 
-                @canplay="audioCanplay" 
-                @timeupdate="audioTimeupdate">
+        <audio :src="song_url" autoplay ref="audio" @canplay="audioCanplay" @timeupdate="audioTimeupdate">
         </audio>
-        <div class="song-message-container">
-            <img  class="bg-image" :src="current_song.al.picUrl" alt="">
+        <div class="content-container" v-show="false">
+            <div class="song-message-container">
+                <img class="bg-image" :src="current_song.al.picUrl" alt="">
+            </div>
+
+            <div class="option-container">
+                <div class="love">
+                    <img src="./cm2_play_icn_love@2x.png" width="100%" height="100%" alt="">
+                </div>
+                <div class="download">
+                    <img src="./cm2_list_detail_icn_dld.png" width="100%" height="100%" alt="">
+                </div>
+                <div class="comment">
+                    <img src="./cm2_list_detail_icn_cmt@2x.png" width="100%" height="100%" alt="">
+                </div>
+                <div class="more">
+                    <img src="./cm2_play_icn_more@2x.png" width="100%" height="100%" alt="">
+                </div>
+            </div>
         </div>
-        <div class="option-container">
-            <div class="love">
-                <img src="./cm2_play_icn_love@2x.png" width="100%" height="100%" alt="">
-            </div>
-            <div class="download">
-                <img src="./cm2_list_detail_icn_dld.png" width="100%" height="100%" alt="">
-            </div>
-            <div class="comment">
-                <img src="./cm2_list_detail_icn_cmt@2x.png" width="100%" height="100%" alt="">
-            </div>
-            <div class="more">
-                <img src="./cm2_play_icn_more@2x.png" width="100%" height="100%" alt="">
-            </div>
+
+        <div class="lyric-container">
+            <scroll ref="scroll">
+                <div class="content">
+                    <p class="lyric" 
+                        v-for="(item, index) in lyricList" 
+                        :key="index" 
+                        :class="{'current': currentLyricIndex === index}">
+                        {{ item.lyric }}
+                    </p>
+                </div>
+            </scroll>
         </div>
+
         <div class="progress-container">
             <span class="current-time">{{ currentTime }}</span>
             <div class="progress-bar" ref="progressBar" @click="handleClickProgressBar">
                 <div class="has-played" ref="progressHasPlayed"></div>
-                <button class="btn" 
-                        ref="progressBtn" 
-                        @touchstart="handleProgressBtnStart">
+                <button class="btn" ref="progressBtn" @touchstart="handleProgressBtnStart">
                 </button>
             </div>
             <span class="total-time">{{ duration }}</span>
         </div>
+
         <div class="tool-container">
             <div class="play-mode" @click="handleSwitchMode">
                 <img v-if="play_mode === 0" src="./cm2_icn_loop@2x.png" width="100%" height="100%" alt="">
@@ -47,8 +59,6 @@
                 <img src="./cm2_play_btn_prev@2x.png" width="100%" height="100%" alt="">
             </div>
             <div class="play-pause" @click="handlePlay">
-                <!-- <i v-if="togglePlay" class="icon fa fa-pause" aria-hidden="true"></i>
-                <i v-else class="icon fa fa-play" aria-hidden="true"></i> -->
                 <img v-if="togglePlay" src="./cm2_runfm_btn_pause@2x.png" width="100%" height="100%" alt="">
                 <img v-else src="./cm2_runfm_btn_play@2x.png" width="100%" height="100%" alt="">
             </div>
@@ -63,16 +73,25 @@
 </template>
 
 <script>
-    import { mapState, mapMutations } from 'vuex';
-    import { getSongUrl, getSongDetail } from '../../api/player.js';
+    import {
+        mapState,
+        mapMutations
+    } from 'vuex';
+    import {
+        getSongUrl,
+        getSongDetail,
+        getLyric
+    } from '../../api/player.js';
 
     export default {
         data() {
             return {
-                duration: '',   // 歌曲的总时长
+                duration: '', // 歌曲的总时长
                 currentTime: '00:00', // 歌曲播放的当前时间
-                togglePlay: true,  // true: play   false: pause
-                play_list_cache: []
+                togglePlay: true, // true: play   false: pause
+                play_list_cache: [],
+                lyricList: [],  // 
+                currentLyricIndex: 0,   // mark the position of lyric    
             };
         },
         computed: {
@@ -91,15 +110,17 @@
             },
         },
         created() {
-            // const params = {
-            //     ids: this.$route.params.id
-            // };
-            // getSongDetail(params).then(res => {
-            //     if (res.code === 200) {
-                    
-            //     }
-            // });
             this.play_list_cache = this.play_list;
+
+            const params = {
+                id: this.current_song.id
+            };
+
+            getLyric(params).then(res => {
+                if (res.code === 200) {
+                    this.lyricList = this.transformLyric(res.lrc.lyric).filter(item => item);
+                }
+            });
         },
         mounted() {
             this.wrap = this.$refs.wrap;
@@ -128,18 +149,22 @@
                 if (this.start) {
                     this.start = false;
                     this.setAudioTime();
+                    this.setLyricPosition();
                     this.audio.play();
                 }
             });
         },
         methods: {
+            /**
+             *  click event handler
+             *  switch song play or pause
+             */
             handlePlay() {
                 this.togglePlay = !this.togglePlay;
 
                 if (this.togglePlay) {
                     this.audio.play();
-                }
-                else {
+                } else {
                     this.audio.pause();
                 }
             },
@@ -153,8 +178,7 @@
 
                 if (type === 1) {
                     index === len - 1 ? index = 0 : index++;
-                }
-                else if (type === -1) {
+                } else if (type === -1) {
                     index === 0 ? index = len - 1 : index--;
                 }
 
@@ -170,7 +194,7 @@
                 let mode = this.play_mode + 1;
 
                 mode = mode_list[mode % len];
-                
+
                 mode === 2 && this.randomPlayList();
 
                 this.setPlayMode(mode);
@@ -187,6 +211,8 @@
                 this.moveProgressHasPlayed(offset);
                 this.moveProgressBtn(offset);
                 this.setAudioTime();
+                this.setLyricPosition();
+                this.audio.play();
             },
             /**
              *  progress-btn touchstart事件
@@ -210,13 +236,43 @@
              */
             audioTimeupdate() {
                 this.getCurrentTime();
-                
+
+                // progress
                 const percent = this.audio.currentTime / this.audio.duration;
                 this.progressHasPlayed.style.width = percent * 100 + '%';
 
+                // button
                 const progressBtnWidth = parseInt(this.getCSS(this.progressBtn, 'width'));
                 const playedWidth = parseInt(this.getCSS(this.progressHasPlayed, 'width'));
                 this.progressBtn.style.left = progressBtnWidth / 2 + playedWidth + 'px';
+
+                // lyric
+                const index = this.currentLyricIndex + 1;
+                const next = this.lyricList[index];
+                
+                if (next && this.audio.currentTime >= next.sequence) {
+                    const el = document.getElementsByClassName('lyric');
+                    next.lyric && this.$refs.scroll.scrollToElement(el[index], 300, false, true);
+                    this.currentLyricIndex = index;
+                }
+            },
+            /**
+             *  accroding to audio.currentTime
+             *  find the index of lyric and scroll to
+             */
+            setLyricPosition() {
+                const lyricList = this.lyricList;
+                const len = lyricList.length;
+
+                for (let i = 0; i < len; i++) {
+                    if (lyricList[i].sequence >= this.audio.currentTime) {
+                        const el = document.getElementsByClassName('lyric');
+                        this.$refs.scroll.scrollToElement(el[i-1], 300, false, true);
+                        this.currentLyricIndex = i;
+
+                        break;
+                    }
+                }
             },
             /**
              *  根据进度条位置，调整歌曲进度
@@ -273,6 +329,16 @@
                 return `${minute}:${second}`;
             },
             /**
+             *  mm:ss -> number
+             */
+            reformat(val) {
+                const arr = val.split(':');
+                const minute = parseFloat(arr[0]);
+                const second = parseFloat(arr[1]);
+
+                return minute * 60 + second;
+            },
+            /**
              *  获取计算后的css属性值
              */
             getCSS(ele, attr) {
@@ -293,7 +359,7 @@
                     }
 
                     while (sequence_list.length) {
-                        const index = Math.floor( Math.random() * sequence_list.length );
+                        const index = Math.floor(Math.random() * sequence_list.length);
 
                         list.push(this.play_list_cache[index]);
                         sequence_list.splice(index, 1);
@@ -302,6 +368,19 @@
 
                 this.play_list_cache = list;
                 this.flag = true;
+            },
+            transformLyric(lyricStr) {
+                return lyricStr.split('\n').map(item => {
+                    if (item && item.match(/\[[0-9\.:]{5,}\]/)) {
+                        const sequence = item.match(/\[[0-9\.:]{5,}\]/)[0];
+                        const lyric = item.slice(item.lastIndexOf(']') + 1);
+
+                        return {
+                            sequence: this.reformat(sequence.slice(1, -1)),
+                            lyric
+                        }
+                    }
+                });
             },
             ...mapMutations({
                 setPlayList: 'SET_PLAY_LIST',
@@ -324,6 +403,7 @@
         from {
             transform: rotate(0deg);
         }
+
         to {
             transform: rotate(360deg);
         }
@@ -356,7 +436,7 @@
                 height: setRem(608);
                 border-radius: 50%;
                 animation: rotate 30s linear infinite;
-                animation-fill-mode:both;
+                animation-fill-mode: both;
             }
         }
 
@@ -369,6 +449,30 @@
             div {
                 width: setRem(80);
                 height: setRem(80);
+            }
+        }
+
+        .lyric-container {
+            height: setRem(900);
+            overflow: hidden;
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: setRem(450) 0;
+
+                .lyric {
+                    width: 60%;
+                    padding: setRem(20) 0;
+                    text-align: center;
+                    font-size: setRem(28);
+                    color: #e8e8e8;
+
+                    &.current {
+                        color: #fff;
+                    }
+                }
             }
         }
 
@@ -408,7 +512,8 @@
                 }
             }
 
-            .current-time, .total-time {
+            .current-time,
+            .total-time {
                 width: setRem(64);
                 font-size: setRem(16);
                 // color: rgb(230, 230, 230);
@@ -425,8 +530,8 @@
             align-items: center;
             height: setRem(170);
 
-            .play-mode, 
-            .backward, 
+            .play-mode,
+            .backward,
             .play-pause,
             .forward,
             .play-list {
@@ -441,5 +546,3 @@
         }
     }
 </style>
-
-
