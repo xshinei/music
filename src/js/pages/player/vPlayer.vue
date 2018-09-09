@@ -3,9 +3,13 @@
         <div class="blur-background">
             <img :src="current_song.al.picUrl" width="100%" height="100%" alt="">
         </div>
-        <audio :src="song_url" autoplay ref="audio" @canplay="audioCanplay" @timeupdate="audioTimeupdate">
+        <audio :src="song_url" 
+                ref="audio" 
+                @canplay="audioCanplay" 
+                @timeupdate="audioTimeupdate"
+                @error="audioError">
         </audio>
-        <div class="content-container" v-show="false">
+        <div class="content-container" v-show="showLyric" @click="showLyric = false">
             <div class="song-message-container">
                 <img class="bg-image" :src="current_song.al.picUrl" alt="">
             </div>
@@ -26,7 +30,7 @@
             </div>
         </div>
 
-        <div class="lyric-container">
+        <div class="lyric-container" v-show="!showLyric" @click="showLyric = true">
             <scroll ref="scroll">
                 <div class="content">
                     <p class="lyric" 
@@ -91,7 +95,9 @@
                 togglePlay: true, // true: play   false: pause
                 play_list_cache: [],
                 lyricList: [],  // 
-                currentLyricIndex: 0,   // mark the position of lyric    
+                currentLyricIndex: 0,   // mark the position of lyric   
+                canSwitch: false,   // switch the song only it download 
+                showLyric: false,   
             };
         },
         computed: {
@@ -173,6 +179,10 @@
              *  type = 1: next song  type = -1: prev song
              */
             handleSwitchSong(type) {
+                if (!this.canSwitch) {
+                    return;
+                }
+
                 let index = this.current_index;
                 const len = this.play_list.length;
 
@@ -183,6 +193,7 @@
                 }
 
                 this.setCurrentIndex(index);
+                this.canSwitch = true;
             },
             /**
              *  click event
@@ -227,6 +238,7 @@
              *  音频可以播放时，获取音频的总时长
              */
             audioCanplay() {
+                this.canSwitch = true;
                 this.duration = this.format(this.audio.duration);
             },
             /**
@@ -255,6 +267,12 @@
                     next.lyric && this.$refs.scroll.scrollToElement(el[index], 300, false, true);
                     this.currentLyricIndex = index;
                 }
+            },
+            /**
+             *  audio error event   
+             */
+            audioError() {
+                this.canSwitch = false;
             },
             /**
              *  accroding to audio.currentTime
@@ -422,7 +440,6 @@
             left: 0;
             right: 0;
             filter: blur(20px);
-            background-color: #000;
         }
 
         .song-message-container {
