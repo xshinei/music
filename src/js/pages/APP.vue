@@ -1,12 +1,15 @@
 <template>
-    <keep-alive>
+    <div>
         <transition :name="transitionName">
             <router-view></router-view>
         </transition>
-    </keep-alive>
+        <v-tab-bar></v-tab-bar>
+    </div>
 </template>
 
 <script>
+    import VTabBar from '../components/tabBar/vTabBar.vue';
+
     export default {
         data(){
             return {
@@ -23,6 +26,9 @@
                     this.transitionName = 'slide-right';
                 }
             }
+        },
+        components: {
+            VTabBar
         }
     };
 </script>
