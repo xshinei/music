@@ -1,6 +1,6 @@
 <template>
     <div class="tab-bar-container">
-        <div class="tab-bar-item find">
+        <div class="tab-bar-item find" :class="{'active': current}">
             <i class="icon"></i>
             <span class="text">发现</span>
         </div>
@@ -25,7 +25,16 @@
 
 <script>
     export default {
-
+        data() {
+            return {
+                
+            };
+        },
+        computed: {
+            current() {
+                return true;
+            }
+        }
     }
 </script>
 
@@ -40,7 +49,7 @@
         z-index: 10;
         display: flex;
         justify-content: space-around;
-        align-items: center;
+        // align-items: center;
         height: setRem(97);
         font-size: 12px;
         background-color: #f5f5f6;
@@ -52,8 +61,77 @@
             .icon {
                 width: setRem(45);
                 height: setRem(45);
-                background-image: url('./cm4_btm_icn_music_prs@2x.png');
+                margin-top: setRem(12);
+                margin-bottom: setRem(6);
                 background-size: 100%;
+            }
+
+            .text {
+                margin-bottom: setRem(2);
+            }
+
+            &.active {
+                color: #d33a31;
+            }
+        }
+
+        .find {
+            .icon {
+                background-image: url('./cm4_btm_icn_discovery@2x.png');
+            }
+
+            &.active {
+                .icon {
+                    background-image: url('./cm4_btm_icn_discovery_prs@2x.png');
+                }
+            }
+        }
+
+        .video {
+            .icon {
+                background-image: url('./cm4_btm_icn_video@2x.png');
+            }
+
+            &.active {
+                .icon {
+                    background-image: url('./cm4_btm_icn_video_prs@2x.png');
+                }
+            }
+        }
+
+        .mine {
+            .icon {
+                background-image: url('./cm4_btm_icn_music@2x.png');
+            }
+
+            &.active {
+                .icon {
+                    background-image: url('./cm4_btm_icn_music_prs@2x.png');
+                }
+            }
+        }
+
+        .friend {
+            .icon {
+                background-image: url('./cm4_btm_icn_friend@2x.png');
+            }
+
+            &.active {
+                .icon {
+                    background-image: url('./cm4_btm_icn_friend_prs@2x.png');
+                }
+            }
+        }
+
+        .account {
+            .icon {
+                background-image: url('./cm4_btm_icn_account@2x.png');
+            }
+
+            &.active {
+                .icon {
+                    background-image: url('./cm4_btm_icn_account_prs@2x.png');
+                }
             }
         }
     }
