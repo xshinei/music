@@ -1,3 +1,4 @@
+import Index from '../pages/index/vIndex.vue';
 import PlaylistIndex from '../pages/playlist/vPlaylistIndex.vue';
 import PickPlaylist from '../pages/playlist/vPickPlaylist.vue';
 import PlaylistContent from '../pages/playlist/vPlaylistContent.vue';
@@ -6,7 +7,7 @@ import Player from '../pages/player/vPlayer.vue';
 export default [
     {
         path: '/',
-        component: PlaylistIndex,
+        component: Index,
         name: '',
         meta: {
             index: 1
