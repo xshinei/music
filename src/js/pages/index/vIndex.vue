@@ -8,12 +8,18 @@
         <div class="tab-container">
             <div class="tab-item"></div>
             <div class="tab-item"></div>
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">Slide 1</div>
-                    <div class="swiper-slide">Slide 2</div>
-                    <div class="swiper-slide">Slide 3</div>
-                </div>
+            <div class="banner-container">
+                <swiper :options="swiperOption" style="width: 363px;">
+                    <swiper-slide class="banner-item" style="background: green;">
+                        111
+                    </swiper-slide>
+                    <swiper-slide class="banner-item">
+                        222
+                    </swiper-slide>
+                    <swiper-slide class="banner-item" style="background: blue;">
+                        333
+                    </swiper-slide>
+                </swiper>
             </div>
         </div>
         <section class="section"></section>
@@ -21,19 +27,30 @@
 </template>
 
 <script>
-    import Swiper from 'swiper';
-    import 'swiper/dist/css/swiper.min.css';
+    import { swiper, swiperSlide } from 'vue-awesome-swiper';
 
     export default {
+        data() {
+            return {
+                swiperOption: {
+                    autoplay: true,
+                    setWrapperSize :true,
+                }
+            };
+        },
         mounted() {
-            const swiper = new Swiper('swiper-container');
+            
+        },
+        components: {
+            swiper,
+            swiperSlide
         }
     }
 </script>
 
 <style lang="scss" scoped>
     @import '../../../css/function.scss';
-
+    // @import '../../../css/swiper.min.scss';
     .header {
         display: flex;
         justify-content: center;
@@ -56,14 +73,16 @@
         height: setRem(302);
         background-color: #dd4439;
 
-        .swiper-container {
+        .banner-container {
             position: absolute;
             top: setRem(92);
             left: 0;
             right: 0;
+            width: setRem(726);
+            height: setRem(282);
             margin: 0 auto;
 
-            .swiper-slide {
+            .banner-item {
                 width: setRem(726);
                 height: setRem(282);
                 background-color: yellow;
