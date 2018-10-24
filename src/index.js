@@ -5,6 +5,7 @@ import store from './js/store/index';
 
 import APP from './js/pages/APP.vue';
 import './js/utils/init';
+import './js/utils/extend';
 import './css/reset.scss';
 import './font/font-awesome/scss/font-awesome.scss';
 import BScroll from './js/components/vScroll.vue';
