@@ -1,3 +1,5 @@
+@import './function.scss';
+
 html, body, div, p, span, a, i
 h1, h2, h3, h4, h5, h6,
 dl, dt, ol , ul, li,
@@ -61,4 +63,19 @@ body {
     font-size: 16px;
     -webkit-text-size-adjust: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+// banner-bullet
+.banner-pagination-bullet {
+    display: inline-block;
+    width: setRem(13);
+    height: setRem(13);
+    margin: 0 4px;
+    border-radius: 100%;
+    opacity: .6;
+    background-color: #fff;
+}
+
+.banner-pagination-bullet-active {
+    background-color: #d73e34;
 }

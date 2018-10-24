@@ -9,7 +9,6 @@ import './css/reset.scss';
 import './font/font-awesome/scss/font-awesome.scss';
 import BScroll from './js/components/vScroll.vue';
 import VueAwesomeSwiper from 'vue-awesome-swiper';
-// import 'swiper/dist/css/swiper.min.css';
 import './css/swiper.min.scss';
 
 Vue.use(VueRouter);
