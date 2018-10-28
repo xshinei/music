@@ -18,7 +18,24 @@
                 </swiper>
             </div>
         </div>
-        <section class="section"></section>
+        <section class="section-container">
+            <div class="section-item">
+                <div class="icon"></div>
+                <span class="text">私人FM</span>
+            </div>
+            <div class="section-item">
+                <div class="icon"></div>
+                <span class="text">每日推荐</span>
+            </div>
+            <div class="section-item">
+                <div class="icon"></div>
+                <span class="text">歌单</span>
+            </div>
+            <div class="section-item">
+                <div class="icon"></div>
+                <span class="text">排行榜</span>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -131,6 +148,29 @@
                 bottom: 0;
                 left: 0;
                 text-align: center;
+            }
+        }
+    }
+
+    .section-container {
+        display: flex;
+
+        height: setRem(277);
+        border-bottom: 1px solid #dee1e1;
+
+        .section-item {
+            margin: setRem(104) setRem(42) 0;
+            text-align: center;
+
+            .icon {
+                width: setRem(100);
+                height: setRem(100);
+                border-radius: 50%;
+                background-color: #e04941;
+            }
+
+            .text {
+                font-size: setRem(14);
             }
         }
     }
