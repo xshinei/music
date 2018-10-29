@@ -36,12 +36,24 @@
                 <span class="text">排行榜</span>
             </div>
         </section>
+        <div class="recommend-container">
+            <div class="recommend-head">
+                <span class="title">推荐歌曲</span>
+                <i class="more"></i>
+            </div>
+            <div class="recommend-content">
+                <div v-for="item in songList.slice(0, 6)" :key="item.id" class="recommend-item">
+                    <img :src="item.picUrl" alt="" class="cover">
+                    <span class="abstract">{{ item.name }}</span>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import { swiper, swiperSlide } from 'vue-awesome-swiper';
-    import { getBanner } from '../../api/index.js';
+    import { getBanner, getRecommendSongList } from '../../api/index.js';
 
     export default {
         data() {
@@ -57,20 +69,28 @@
                         bulletActiveClass: 'banner-pagination-bullet-active'
                     }
                 },
-                banners: []
+                banners: [],
+                songList: []
             };
         },
         created() {
             this._getBanner();
         },
         mounted() {
-            
+            this._getRecommendSongList();
         },
         methods: {
             _getBanner() {
                 getBanner().then(res => {
                     if (res.code === 200) {
                         this.banners = res.banners;
+                    }
+                });
+            },
+            _getRecommendSongList() {
+                getRecommendSongList().then(res => {
+                    if (res.code === 200) {
+                        this.songList = res.result;
                     }
                 });
             }
@@ -156,7 +176,7 @@
         display: flex;
 
         height: setRem(277);
-        border-bottom: 1px solid #dee1e1;
+        border-bottom: 0.5px solid #dee1e1;
 
         .section-item {
             margin: setRem(104) setRem(42) 0;
@@ -171,6 +191,55 @@
 
             .text {
                 font-size: setRem(14);
+            }
+        }
+    }
+
+    .recommend-container {
+        padding: 0 setRem(12);
+
+        .recommend-head {
+            display: flex;
+            align-items: center;
+            line-height: setRem(100);
+            
+            .more {
+                display: inline-block;
+                width: setRem(32);
+                height: setRem(32);
+                margin-left: setRem(15);
+                background-image: url('./cm2_discover_icn_more@2x.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+        }
+
+        .recommend-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .recommend-item {
+                width: setRem(237);
+                height: setRem(317);
+                margin-bottom: setRem(30);
+
+                .cover {
+                    width: setRem(237);
+                    height: setRem(237);
+                    border-radius: setRem(8);
+                }
+                
+                .abstract {
+                    font-size: 12px;
+                    color: #213434;            
+                   overflow: hidden;
+text-overflow: ellipsis;
+display:-webkit-box; //作为弹性伸缩盒子模型显示。
+-webkit-box-orient:vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+-webkit-line-clamp:2; //显示的行
+
+                }
             }
         }
     }
