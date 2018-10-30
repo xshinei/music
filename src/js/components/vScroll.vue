@@ -55,9 +55,9 @@
         },
         mounted() {
             // 保证在DOM渲染完毕后初始化better-scroll
-            // setTimeout(() => {
+            setTimeout(() => {
                 this._initScroll()
-            // }, 20);
+            }, 20);
         },
         methods: {
             _initScroll() {
@@ -126,9 +126,9 @@
         },
         watch: {
             data(val) {
-                // setTimeout(() => {
+                setTimeout(() => {
                     this.refresh();
-                // }, this.refreshDelay);
+                }, this.refreshDelay);
             }
         }
     }
