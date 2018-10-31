@@ -40,6 +40,8 @@
                         </div>
                     </section>
                     <recommend-item title="推荐歌单" :list="songList"></recommend-item>
+                    <recommend-item title="最新音乐" :list="newSongs"></recommend-item>
+                    <recommend-item title="主播电台" :list="broadcastings"></recommend-item>
                 </div>
             </scroll>
         </div>
@@ -53,7 +55,9 @@
     } from 'vue-awesome-swiper';
     import {
         getBanner,
-        getRecommendSongList
+        getRecommendSongList,
+        getRecommendNewSongs,
+        getRecommendBroadcastings
     } from '../../api/index.js';
     import RecommendItem from '../../components/RecommendItem/vRecommendItem.vue';
 
@@ -72,7 +76,9 @@
                     }
                 },
                 banners: [],
-                songList: []
+                songList: [],
+                newSongs: [],
+                broadcastings: []
             };
         },
         created() {
@@ -80,6 +86,8 @@
         },
         mounted() {
             this._getRecommendSongList();
+            this._getRecommendNewSongs();
+            this._getRecommendBroadcastings();
         },
         methods: {
             _getBanner() {
@@ -93,6 +101,20 @@
                 getRecommendSongList().then(res => {
                     if (res.code === 200) {
                         this.songList = res.result;
+                    }
+                });
+            },
+            _getRecommendNewSongs() {
+                getRecommendNewSongs().then(res => {
+                    if (res.code === 200) {
+                        this.newSongs = res.result;
+                    }
+                });
+            },
+            _getRecommendBroadcastings() {
+                getRecommendBroadcastings().then(res => {
+                    if (res.code === 200) {
+                        this.broadcastings = res.result;
                     }
                 });
             }
@@ -119,7 +141,7 @@
         justify-content: center;
         align-items: center;
         height: setRem(86);
-        background-color: #d73e34;
+        background-color: #dd4439;
 
         .search-container {
             .search-input {
